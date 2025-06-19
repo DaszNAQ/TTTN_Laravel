@@ -1,0 +1,75 @@
+/* Reset mặc định */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* Tổng Layout chia ngang */
+body {
+    display: flex;
+}
+
+.main .content-wrapper {
+    flex: 1;
+}
+
+footer {
+    background: #222;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #343a40;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding-top: 60px;
+}
+
+.sidebar h5 {
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    color: white;
+    padding: 10px 20px;
+    display: block;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.sidebar a:hover {
+    background-color: #495057;
+}
+
+/* Main content */
+.main {
+    margin-left: 220px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Navbar (chỉ giữ chiều ngang đơn giản) */
+.navbar-custom {
+    background-color: #343a40;
+    color: white;
+}
+
+/* Footer cố định đơn giản */
+footer {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+}

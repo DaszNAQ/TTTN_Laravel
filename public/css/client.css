@@ -1,0 +1,45 @@
+body {
+    color: #000000;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #3333ff !important;
+}
+
+.navbar-nav .nav-link {
+    color: #000000 !important;
+}
+
+.product-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.footer {
+    background-color: #3333ff;
+    color: #000000;
+    padding: 40px 0;
+}
+
+.footer h5 {
+    color: #000000;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.footer a {
+    color: #000000;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer .logo-footer {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
