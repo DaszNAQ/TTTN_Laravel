@@ -18,7 +18,7 @@ class ClientOrderLookupController extends Controller
             'query' => 'required|string'
         ]);
 
-        $input = $request->input('query'); // sửa tại đây
+        $input = $request->input('query'); 
 
         $orders = Order::whereHas('customer', function ($q) use ($input) {
             $q->where('email', $input)

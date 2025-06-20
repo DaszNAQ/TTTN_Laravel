@@ -9,11 +9,8 @@ use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ClientOrderLookupController;
 use App\Http\Controllers\Admin\AdminController;
-
-// Xem trạng thái đơn hàng
-Route::get('/orders/lookup', [ClientOrderLookupController::class, 'form'])->name('client.orders.form');
-Route::get('/orders/search', [ClientOrderLookupController::class, 'search'])->name('client.orders.search');
-
+use App\Http\Controllers\Client\AuthController as ClientAuthController;
+use App\Http\Controllers\PaymentController;
 
 // Đăng nhập / đăng ký / quên mật khẩu
 Route::get('/login', [UserController::class, 'login'])->name('login');
@@ -38,6 +35,27 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 // Trang chủ
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Thanh toán
+
+
+Route::get('/vnpay-payment/{order}', [PaymentController::class, 'createPayment'])->name('vnpay.payment');
+Route::get('/vnpay-return', [PaymentController::class, 'vnpayReturn'])->name('vnpay.return');
+
+
+// Đăng ký & Đăng nhập cho khách hàng
+
+Route::get('/customer/register', [ClientAuthController::class, 'showRegister'])->name('customer.register');
+Route::post('/customer/register', [ClientAuthController::class, 'register'])->name('customer.register.post');
+
+Route::get('/customer/login', [ClientAuthController::class, 'showLogin'])->name('customer.login');
+Route::post('/customer/login', [ClientAuthController::class, 'login'])->name('customer.login.post');
+
+Route::get('/customer/logout', [ClientAuthController::class, 'logout'])->name('customer.logout');
+
+
+Route::get('/customer/change-password', [ClientAuthController::class, 'showChangePassword'])->name('customer.password.change');
+Route::post('/customer/change-password', [ClientAuthController::class, 'updatePassword'])->name('customer.password.update');
+
 // Đặt hàng
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.add');
@@ -52,7 +70,11 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('car
 // Đặt hàng
 Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 Route::post('/cart/checkout', [CartController::class, 'processCheckout'])->name('cart.processCheckout');
+Route::post('/checkout/payment', [CartController::class, 'handlePayment'])->name('checkout.payment');
 
+Route::get('/thankyou', function () {
+    return view('client.thankyou');
+})->name('thankyou');
 
 // Xem danh mục
 Route::get('/category/{id}', [HomeController::class, 'category'])->name('category.products');
@@ -62,10 +84,13 @@ Route::get('/product/{id}', [HomeController::class, 'detail'])->name('product.de
 // Tìm kiếm sản phẩm
 Route::get('/search', [HomeController::class, 'search'])->name('product.search');
 
+// Xem trạng thái đơn hàng
+Route::get('/orders/lookup', [ClientOrderLookupController::class, 'form'])->name('client.orders.form');
+Route::get('/orders/search', [ClientOrderLookupController::class, 'search'])->name('client.orders.search');
+
 
 // Khuyến mãi, tin tức, thông tin liên hệ
 Route::get('/tin-tuc', [PageController::class, 'news'])->name('news');
-Route::get('/khuyen-mai', [PageController::class, 'promotion'])->name('promotion');
 Route::get('/lien-he', [PageController::class, 'contact'])->name('contact');
 
 
@@ -97,7 +122,7 @@ Route::prefix('ad')->name('admin.')->middleware('auth')->group(function () {
     Route::delete('products-force-delete/{id}', [App\Http\Controllers\Admin\ProductController::class, 'forceDelete'])->name('products.forceDelete');
 
     // CRUD Users (Chỉ Admin mới được vào)
-    Route::middleware(['auth','checkrole:admin'])->group(function () {
+    Route::middleware(['auth', 'checkrole:admin'])->group(function () {
         Route::resource('users', App\Http\Controllers\Admin\UserController::class);
         Route::get('users-trash', [App\Http\Controllers\Admin\UserController::class, 'trash'])->name('users.trash');
         Route::post('users-restore/{id}', [App\Http\Controllers\Admin\UserController::class, 'restore'])->name('users.restore');

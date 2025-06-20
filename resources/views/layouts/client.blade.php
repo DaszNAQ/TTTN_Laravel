@@ -18,6 +18,14 @@
             <div class="logo">
                 <h3 class="m-0 text-primary">PropTech Zone</h3>
             </div>
+            @if (session('customer'))
+                👋 Xin chào, {{ session('customer')->name }} | <a href="{{ route('customer.logout') }}">Đăng xuất</a> |
+                <a href="{{ route('customer.password.change') }}">Đổi mật khẩu</a>
+            @else
+                <a href="{{ route('customer.login') }}">Đăng nhập</a> |
+                <a href="{{ route('customer.register') }}">Đăng ký</a>
+            @endif
+
             <div class="auth-links">
                 <a href="{{ route('client.orders.form') }}"class="btn btn-outline-primary me-2">Tra cứu đơn hàng</a>
                 <a href="{{ route('cart.index') }}" class="btn btn-outline-primary me-2">

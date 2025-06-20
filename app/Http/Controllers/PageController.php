@@ -11,10 +11,6 @@ class PageController extends Controller
         return view('pages.news');
     }
 
-    public function promotion()
-    {
-        return view('pages.promotion');
-    }
 
     public function contact()
     {

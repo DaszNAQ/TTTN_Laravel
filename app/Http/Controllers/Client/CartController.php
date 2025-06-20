@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
@@ -95,44 +96,57 @@ class CartController extends Controller
         return view('client.cart.checkout');
     }
 
+
     public function processCheckout(Request $request)
     {
         $cart = session('cart');
 
+        // Nếu giỏ hàng trống
         if (!$cart || count($cart) == 0) {
             return redirect()->route('cart.index')->with('error', 'Giỏ hàng trống.');
         }
 
+        // Kiểm tra đăng nhập khách hàng
+        $sessionCustomer = Session::get('customer');
+        if (!$sessionCustomer) {
+            return redirect()->route('customer.login')->with('error', 'Bạn cần đăng nhập để tiếp tục đặt hàng.');
+        }
+
         // Validate dữ liệu đầu vào
         $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'address' => 'required|string|max:500',
-            'note' => 'nullable|string|max:1000',
+            'name'           => 'required|string|max:255',
+            'phone'          => 'required|string|max:20',
+            'email'          => 'required|email|max:255',
+            'address'        => 'required|string|max:500',
+            'note'           => 'nullable|string|max:1000',
+            'payment_method' => 'required|in:cod,vnpay,momo',
         ]);
 
         DB::beginTransaction();
-        try {
-            // Tìm hoặc tạo khách hàng theo email
-            $customer = \App\Models\Customer::firstOrCreate(
-                ['email' => $request->email],
-                [
-                    'name' => $request->name,
-                    'phone' => $request->phone,
-                    'address' => $request->address,
-                ]
-            );
 
-            // Tạo đơn hàng mới
-            $order = \App\Models\Order::create([
-                'customer_id' => $customer->id,
-                'note' => $request->note,
+        try {
+            // Lấy thông tin customer từ session
+            $customer = Customer::findOrFail($sessionCustomer->id);
+
+            // Cập nhật lại thông tin nếu người dùng thay đổi
+            $customer->update([
+                'name'    => $request->name,
+                'email'   => $request->email,
+                'phone'   => $request->phone,
+                'address' => $request->address,
             ]);
 
-            // Lưu từng sản phẩm trong giỏ hàng
+            // Tạo đơn hàng
+            $order = Order::create([
+                'customer_id'    => $customer->id,
+                'note'           => $request->note,
+                'payment_method' => $request->payment_method,
+                'payment_status' => $request->payment_method === 'cod' ? 'pending' : 'paid',
+            ]);
+
+            // Lưu sản phẩm trong giỏ hàng vào order_items
             foreach ($cart as $productId => $item) {
-                \App\Models\OrderItem::create([
+                OrderItem::create([
                     'order_id'   => $order->id,
                     'product_id' => $productId,
                     'price'      => $item['price'],
@@ -140,15 +154,44 @@ class CartController extends Controller
                 ]);
             }
 
-            // Xoá giỏ hàng
+            // Xóa giỏ hàng sau khi đặt
             session()->forget('cart');
             DB::commit();
 
-            return redirect()->route('home')->with('success', 'Đặt hàng thành công!');
+            // Nếu chọn VNPay thì chuyển hướng sang trang thanh toán
+            if ($request->payment_method === 'vnpay') {
+                return redirect()->route('vnpay.payment', ['order' => $order->id]);
+            }
+
+            // Nếu chọn Momo (giả lập)
+            if ($request->payment_method === 'momo') {
+                return redirect()->route('thankyou')->with('success', 'Đặt hàng bằng Momo (giả lập).');
+            }
+
+            // Nếu chọn COD thì chuyển về trang cảm ơn
+            session()->flash('last_order_id', $order->id);
+            return redirect()->route('thankyou')->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
-            dd($e->getMessage()); // tạm thời để debug
             DB::rollBack();
-            return redirect()->back()->with('error', 'Lỗi khi xử lý đơn hàng');
+            return back()->with('error', 'Lỗi khi xử lý đơn hàng: ' . $e->getMessage());
         }
+    }
+
+
+
+    public function handlePayment(Request $request)
+    {
+        $method = $request->payment_method;
+        $order = Order::latest()->where('user_id', auth()->id())->first();
+
+        if (!$order) {
+            return redirect()->back()->with('error', 'Không tìm thấy đơn hàng.');
+        }
+
+        $order->payment_method = $method;
+        $order->payment_status = $method === 'cod' ? 'pending' : 'paid';
+        $order->save();
+
+        return redirect()->route('thankyou')->with('success', 'Thanh toán thành công!');
     }
 }
