@@ -45,20 +45,21 @@
             <div class="mb-3">
                 <label>Ghi chú</label>
                 <textarea name="note" class="form-control">{{ old('note') }}</textarea>
-            </div>
+            </div>0
 
             <div class="mb-3">
                 <label>Phương thức thanh toán:</label>
                 <select name="payment_method" class="form-control" required>
-                    <option value="vnpay" {{ old('payment_method') == 'vnpay' ? 'selected' : '' }}>VNPay (giả lập)</option>
+                    <option value="momo" {{ old('payment_method') == 'momo' ? 'selected' : '' }}>Momo (giả lập)</option>
                     <option value="cod" {{ old('payment_method') == 'cod' ? 'selected' : '' }}>Thanh toán khi nhận hàng
                         (COD)</option>
-                    <option value="momo" {{ old('payment_method') == 'momo' ? 'selected' : '' }}>Momo (giả lập)</option>
                 </select>
             </div>
 
             <div class="d-flex justify-content-between">
                 <a href="{{ route('cart.index') }}" class="btn btn-secondary">Quay lại giỏ hàng</a>
+                {{-- <button type="submit" name="momo" class="btn btn-danger">Thanh toán bằng Momo</button>
+                <button type="submit" name="cod" class="btn btn-success">Thanh toán khi nhận hàng</button> --}}
                 <button type="submit" class="btn btn-success">Xác nhận đặt hàng</button>
             </div>
         </form>

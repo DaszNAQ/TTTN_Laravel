@@ -8,10 +8,9 @@ use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ClientOrderLookupController;
+use App\Http\Controllers\MomoController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Client\AuthController as ClientAuthController;
-use App\Http\Controllers\PaymentController;
-
 // Đăng nhập / đăng ký / quên mật khẩu
 Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/login', [UserController::class, 'loginpost'])->name('loginpost');
@@ -38,8 +37,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Thanh toán
 
 
-Route::get('/vnpay-payment/{order}', [PaymentController::class, 'createPayment'])->name('vnpay.payment');
-Route::get('/vnpay-return', [PaymentController::class, 'vnpayReturn'])->name('vnpay.return');
+
 
 
 // Đăng ký & Đăng nhập cho khách hàng
@@ -59,6 +57,22 @@ Route::post('/customer/change-password', [ClientAuthController::class, 'updatePa
 // Đặt hàng
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+
+
+Route::get('/momo/payment', [MomoController::class, 'createPayment'])->name('momo.pay');
+Route::post('/momo/ipn', [MomoController::class, 'handleIPN'])->name('momo.ipn');
+Route::get('/momo/result', [MomoController::class, 'showResult'])->name('momo.result');
+
+
+// test
+Route::get('/test-config', function () {
+    return [
+        'partner_code' => config('momo.partner_code'),
+        'env_check'    => env('MOMO_PARTNER_CODE')
+    ];
+});
+
+
 
 // Xem giỏ hàng
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

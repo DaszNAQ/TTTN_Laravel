@@ -100,83 +100,73 @@ class CartController extends Controller
     public function processCheckout(Request $request)
     {
         $cart = session('cart');
+        $customer = session('customer');
 
-        // Nếu giỏ hàng trống
         if (!$cart || count($cart) == 0) {
             return redirect()->route('cart.index')->with('error', 'Giỏ hàng trống.');
         }
 
-        // Kiểm tra đăng nhập khách hàng
-        $sessionCustomer = Session::get('customer');
-        if (!$sessionCustomer) {
-            return redirect()->route('customer.login')->with('error', 'Bạn cần đăng nhập để tiếp tục đặt hàng.');
+        if (!$customer) {
+            return redirect()->route('customer.login')->with('error', 'Bạn cần đăng nhập để tiếp tục.');
         }
 
-        // Validate dữ liệu đầu vào
         $request->validate([
-            'name'           => 'required|string|max:255',
-            'phone'          => 'required|string|max:20',
-            'email'          => 'required|email|max:255',
-            'address'        => 'required|string|max:500',
-            'note'           => 'nullable|string|max:1000',
-            'payment_method' => 'required|in:cod,vnpay,momo',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'address' => 'required|string|max:500',
+            'note' => 'nullable|string|max:1000',
+            'payment_method' => 'required|in:cod,momo',
         ]);
 
+        // Nếu chọn MoMo → chuyển sang route momo.pay
+        if ($request->payment_method === 'momo') {
+            // Lưu các thông tin vào session để sử dụng ở MomoController
+            session([
+                'checkout_info' => $request->only(['name', 'phone', 'email', 'address', 'note', 'payment_method']),
+            ]);
+
+            return redirect()->route('momo.pay');
+        }
+
+        // Xử lý cho COD (thanh toán khi nhận hàng)
         DB::beginTransaction();
-
         try {
-            // Lấy thông tin customer từ session
-            $customer = Customer::findOrFail($sessionCustomer->id);
+            $total = 0;
+            foreach ($cart as $item) {
+                $total += $item['price'] * $item['quantity'];
+            }
 
-            // Cập nhật lại thông tin nếu người dùng thay đổi
-            $customer->update([
-                'name'    => $request->name,
-                'email'   => $request->email,
-                'phone'   => $request->phone,
-                'address' => $request->address,
-            ]);
-
-            // Tạo đơn hàng
             $order = Order::create([
-                'customer_id'    => $customer->id,
-                'note'           => $request->note,
-                'payment_method' => $request->payment_method,
-                'payment_status' => $request->payment_method === 'cod' ? 'pending' : 'paid',
+                'customer_id' => $customer->id,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'address' => $request->address,
+                'note' => $request->note,
+                'payment_method' => 'cod',
+                'payment_status' => 'unpaid',
+                'status' => 'pending',
+                'total_price' => $total,
             ]);
 
-            // Lưu sản phẩm trong giỏ hàng vào order_items
             foreach ($cart as $productId => $item) {
                 OrderItem::create([
-                    'order_id'   => $order->id,
+                    'order_id' => $order->id,
                     'product_id' => $productId,
-                    'price'      => $item['price'],
-                    'quantity'   => $item['quantity'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
                 ]);
             }
 
-            // Xóa giỏ hàng sau khi đặt
-            session()->forget('cart');
             DB::commit();
-
-            // Nếu chọn VNPay thì chuyển hướng sang trang thanh toán
-            if ($request->payment_method === 'vnpay') {
-                return redirect()->route('vnpay.payment', ['order' => $order->id]);
-            }
-
-            // Nếu chọn Momo (giả lập)
-            if ($request->payment_method === 'momo') {
-                return redirect()->route('thankyou')->with('success', 'Đặt hàng bằng Momo (giả lập).');
-            }
-
-            // Nếu chọn COD thì chuyển về trang cảm ơn
-            session()->flash('last_order_id', $order->id);
-            return redirect()->route('thankyou')->with('success', 'Đặt hàng thành công!');
+            session()->forget('cart');
+            return redirect()->route('home')->with('success', 'Đặt hàng thành công! Cảm ơn bạn.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Lỗi khi xử lý đơn hàng: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi đặt hàng.');
         }
     }
-
 
 
     public function handlePayment(Request $request)
