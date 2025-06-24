@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5" style="max-width: 500px;">
-    <h3>🔐 Đổi mật khẩu</h3>
+    <h3>Đổi mật khẩu</h3>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

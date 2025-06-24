@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container mt-5" style="max-width: 500px;">
-        <h3>📝 Đăng ký tài khoản</h3>
+        <h3>Đăng ký tài khoản</h3>
         <form method="POST" action="{{ route('customer.register.post') }}">
             @csrf
             <div class="form-group mb-2">

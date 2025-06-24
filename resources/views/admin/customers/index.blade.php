@@ -4,8 +4,8 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4>Danh sách Khách hàng</h4>
     <div>
-        <a href="{{ route('admin.customers.trash') }}" class="btn btn-danger">🗑️ Thùng rác</a>
-        <a href="{{ route('admin.customers.create') }}" class="btn btn-primary">➕ Thêm mới</a>
+        <a href="{{ route('admin.customers.trash') }}" class="btn btn-danger">Thùng rác</a>
+        <a href="{{ route('admin.customers.create') }}" class="btn btn-primary">Thêm mới</a>
     </div>
 </div>
 

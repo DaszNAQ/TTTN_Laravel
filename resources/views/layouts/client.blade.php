@@ -11,26 +11,36 @@
 </head>
 
 <body>
-
     <!-- Header -->
-    <header class="bg-white border-bottom py-3">
-        <div class="container d-flex justify-content-between align-items-center">
+    <header class="bg-white border-bottom py-2">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div class="logo">
-                <h3 class="m-0 text-primary">PropTech Zone</h3>
+                <h3 class="m-0 text-primary"> <a class="nav-link" href="{{ route('home') }}">PropTech Zone</a></h3>
             </div>
-            @if (session('customer'))
-                👋 Xin chào, {{ session('customer')->name }} | <a href="{{ route('customer.logout') }}">Đăng xuất</a> |
-                <a href="{{ route('customer.password.change') }}">Đổi mật khẩu</a>
-            @else
-                <a href="{{ route('customer.login') }}">Đăng nhập</a> |
-                <a href="{{ route('customer.register') }}">Đăng ký</a>
-            @endif
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                @if (session('customer'))
+                    <a href="{{ route('client.orders.form') }}" class="btn btn-outline-dark btn-sm">
+                        <i class="bi bi-search"></i> Tra cứu đơn hàng đã đặt
+                    </a>
+                @endif
 
-            <div class="auth-links">
-                <a href="{{ route('client.orders.form') }}"class="btn btn-outline-primary me-2">Tra cứu đơn hàng</a>
-                <a href="{{ route('cart.index') }}" class="btn btn-outline-primary me-2">
-                    🛒 Giỏ hàng ({{ session('cart') ? count(session('cart')) : 0 }})
+                <a href="{{ route('cart.index') }}" class="btn btn-outline-dark btn-sm">
+                    <i class="bi bi-cart4"></i> Giỏ hàng ({{ session('cart') ? count(session('cart')) : 0 }})
                 </a>
+
+                @if (session('customer'))
+                    <span class="text-muted ms-2 small">{{ session('customer')->name }}</span>
+                    <a href="{{ route('customer.password.change') }}" class="btn btn-outline-secondary btn-sm">Đổi mật
+                        khẩu</a>
+                    <a href="{{ route('customer.logout') }}" class="btn btn-danger btn-sm">Đăng xuất</a>
+                @else
+                    <a href="{{ route('customer.login') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                    </a>
+                    <a href="{{ route('customer.register') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-person-plus"></i> Đăng ký
+                    </a>
+                @endif
             </div>
         </div>
     </header>
@@ -44,8 +54,6 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Trang chủ</a></li>
-
-                    <!-- Danh mục sản phẩm từ DB -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,7 +66,6 @@
                             @endforeach
                         </ul>
                     </li>
-
                     <li class="nav-item"><a class="nav-link" href="{{ route('news') }}">Tin tức</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Liên hệ</a></li>
                 </ul>
@@ -67,14 +74,12 @@
                         aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Tìm</button>
                 </form>
-
             </div>
         </div>
     </nav>
 
     <!-- Nội dung chính -->
     <main class="container my-5">
-        <!-- Thông báo thành công / lỗi -->
         @if (session('success'))
             <div class="alert alert-success text-center">
                 {{ session('success') }}
@@ -91,7 +96,7 @@
     </main>
 
     <!-- Footer -->
-    <div class="footer mt-5 bg-light py-4 border-top">
+    <div class="footer mt-5 bg-info-subtle text-dark py-4 border-top">
         <div class="container">
             <div class="row">
                 <div class="col-md-3">
@@ -129,8 +134,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     @yield('scripts')
+
 </body>
 
 </html>

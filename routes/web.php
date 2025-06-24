@@ -34,12 +34,6 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 // Trang chủ
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Thanh toán
-
-
-
-
-
 // Đăng ký & Đăng nhập cho khách hàng
 
 Route::get('/customer/register', [ClientAuthController::class, 'showRegister'])->name('customer.register');
@@ -65,12 +59,12 @@ Route::get('/momo/result', [MomoController::class, 'showResult'])->name('momo.re
 
 
 // test
-Route::get('/test-config', function () {
-    return [
-        'partner_code' => config('momo.partner_code'),
-        'env_check'    => env('MOMO_PARTNER_CODE')
-    ];
-});
+// Route::get('/test-config', function () {
+//     return [
+//         'partner_code' => config('momo.partner_code'),
+//         'env_check'    => env('MOMO_PARTNER_CODE')
+//     ];
+// });
 
 
 
@@ -100,7 +94,7 @@ Route::get('/search', [HomeController::class, 'search'])->name('product.search')
 
 // Xem trạng thái đơn hàng
 Route::get('/orders/lookup', [ClientOrderLookupController::class, 'form'])->name('client.orders.form');
-Route::get('/orders/search', [ClientOrderLookupController::class, 'search'])->name('client.orders.search');
+// Route::get('/orders/search', [ClientOrderLookupController::class, 'search'])->name('client.orders.search');
 
 
 // Khuyến mãi, tin tức, thông tin liên hệ

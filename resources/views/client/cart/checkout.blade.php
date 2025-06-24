@@ -50,9 +50,8 @@
             <div class="mb-3">
                 <label>Phương thức thanh toán:</label>
                 <select name="payment_method" class="form-control" required>
-                    <option value="momo" {{ old('payment_method') == 'momo' ? 'selected' : '' }}>Momo (giả lập)</option>
-                    <option value="cod" {{ old('payment_method') == 'cod' ? 'selected' : '' }}>Thanh toán khi nhận hàng
-                        (COD)</option>
+                    <option value="cod" {{ old('payment_method') == 'cod' ? 'selected' : '' }}>Thanh toán khi nhận hàng </option>
+                    <option value="momo" {{ old('payment_method') == 'momo' ? 'selected' : '' }}>Momo (chưa hoàn thiện) </option>
                 </select>
             </div>
 

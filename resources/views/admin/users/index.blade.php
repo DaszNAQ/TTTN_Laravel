@@ -4,8 +4,8 @@
 <div class="d-flex justify-content-between mb-3">
     <h4>Danh sách Người dùng</h4>
     <div>
-        <a href="{{ route('admin.users.trash') }}" class="btn btn-danger">🗑️ Thùng rác</a>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">➕ Thêm mới</a>
+        <a href="{{ route('admin.users.trash') }}" class="btn btn-danger">Thùng rác</a>
+        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Thêm mới</a>
     </div>
 </div>
 

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="mb-4">🎉 Cảm ơn bạn đã đặt hàng!</h2>
+    <h2 class="mb-4">Cảm ơn bạn đã đặt hàng!</h2>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <h4>🧾 Chi tiết đơn hàng:</h4>
+        <h4>Chi tiết đơn hàng:</h4>
         <table class="table table-bordered mt-3">
             <thead class="table-light">
                 <tr>

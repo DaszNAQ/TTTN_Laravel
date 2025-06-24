@@ -2,15 +2,7 @@
 
 @section('content')
     <div class="container mt-5">
-        <h4>Tra cứu trạng thái đơn hàng</h4>
-
-        <form action="{{ route('client.orders.search') }}" method="GET" class="mb-4">
-            <div class="mb-3">
-                <label>Email hoặc Số điện thoại:</label>
-                <input type="text" name="query" class="form-control" value="{{ old('query', $input ?? '') }}" required>
-            </div>
-            <button class="btn btn-primary">Tra cứu</button>
-        </form>
+        <h4>Xem các trạng thái đơn hàng bạn đã đặt</h4>
 
         @isset($orders)
             @if ($orders->count() > 0)

@@ -3,10 +3,6 @@
 @section('content')
     <div class="d-flex justify-content-between mb-3">
         <h4>Danh sách Đơn hàng</h4>
-        <div>
-            <a href="{{ route('admin.orders.trash') }}" class="btn btn-danger">🗑️ Thùng rác</a>
-            <a href="{{ route('admin.orders.create') }}" class="btn btn-primary">➕ Thêm mới</a>
-        </div>
     </div>
 
     @if (session('success'))
@@ -56,12 +52,6 @@
                     <td>
                         <a href="{{ route('admin.orders.show', $item->id) }}" class="btn btn-sm btn-info">Chi tiết</a>
                         <a href="{{ route('admin.orders.edit', $item->id) }}" class="btn btn-sm btn-warning">Sửa</a>
-                        <form action="{{ route('admin.orders.destroy', $item->id) }}" method="POST" class="d-inline-block"
-                            onsubmit="return confirm('Bạn có chắc muốn xoá?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-danger">Xoá</button>
-                        </form>
                     </td>
                 </tr>
             @endforeach

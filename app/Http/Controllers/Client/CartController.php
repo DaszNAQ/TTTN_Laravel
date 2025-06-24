@@ -93,8 +93,14 @@ class CartController extends Controller
         if (!session('cart') || count(session('cart')) == 0) {
             return redirect()->route('cart.index')->with('error', 'Giỏ hàng trống.');
         }
+
+        if (!session('customer')) {
+            return redirect()->route('customer.login')->with('error', 'Bạn cần đăng nhập để đặt hàng.');
+        }
+
         return view('client.cart.checkout');
     }
+
 
 
     public function processCheckout(Request $request)

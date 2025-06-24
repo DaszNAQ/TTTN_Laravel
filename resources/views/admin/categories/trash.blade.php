@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex justify-content-between mb-3">
     <h4>Danh sách Loại sản phẩm trong Thùng rác</h4>
-    <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">← Quay về Danh sách</a>
+    <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary"> Quay về Danh sách</a>
 </div>
 
 @if(session('success'))
