@@ -225,7 +225,7 @@ class UserController extends Controller
             'fullname' => $request->fullname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 0, // default là user bình thường
+            'role' => 0, 
         ]);
 
         Auth::login($user);

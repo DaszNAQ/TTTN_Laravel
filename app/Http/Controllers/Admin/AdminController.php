@@ -22,20 +22,20 @@ class AdminController extends Controller
             ->sum(fn($item) => $item->price * $item->quantity);
 
         // Doanh thu theo ngày (chỉ đơn completed)
-        $revenues = DB::table('orders')
-            ->join('order_items', 'orders.id', '=', 'order_items.order_id')
-            ->select(DB::raw('DATE(orders.created_at) as day'), DB::raw('SUM(order_items.price * order_items.quantity) as revenue'))
-            ->where('orders.status', 'completed')
-            ->groupBy(DB::raw('DATE(orders.created_at)'))
-            ->orderBy('day')
-            ->get();
+        // $revenues = DB::table('orders')
+        //     ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+        //     ->select(DB::raw('DATE(orders.created_at) as day'), DB::raw('SUM(order_items.price * order_items.quantity) as revenue'))
+        //     ->where('orders.status', 'completed')
+        //     ->groupBy(DB::raw('DATE(orders.created_at)'))
+        //     ->orderBy('day')
+        //     ->get();
 
-        $chartLabels = $revenues->pluck('day')->map(fn($d) => Carbon::parse($d)->format('d/m'))->toArray();
-        $chartValues = $revenues->pluck('revenue')->toArray();
+        // $chartLabels = $revenues->pluck('day')->map(fn($d) => Carbon::parse($d)->format('d/m'))->toArray();
+        // $chartValues = $revenues->pluck('revenue')->toArray();
 
         return view('admin.dashboard', compact(
             'totalProducts', 'totalOrders', 'totalRevenue',
-            'chartLabels', 'chartValues'
+            // 'chartLabels', 'chartValues'
         ));
     }
 }
